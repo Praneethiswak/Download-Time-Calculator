@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Time Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Download Time Calculator</h1>
+        
+        <label for="fileSize">File Size:</label>
+        <input type="number" id="fileSize" placeholder="Enter file size" min="0" step="any">
+        <select id="fileSizeUnit">
+            <option value="MB">MB</option>
+            <option value="GB">GB</option>
+            <option value="KB">KB</option>
+        </select>
+        
+        <label for="downloadSpeed">Download Speed:</label>
+        <input type="number" id="downloadSpeed" placeholder="Enter download speed" min="0" step="any">
+        <select id="downloadSpeedUnit">
+            <option value="Mbps">Mbps</option>
+            <option value="MBps">MBps</option>
+            <option value="GBps">GBps</option>
+        </select>
+        
+        <button onclick="calculateDownloadTime()">Calculate</button>
+        
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculateDownloadTime() {
+            const fileSize = parseFloat(document.getElementById('fileSize').value);
+            const fileSizeUnit = document.getElementById('fileSizeUnit').value;
+            const downloadSpeed = parseFloat(document.getElementById('downloadSpeed').value);
+            const downloadSpeedUnit = document.getElementById('downloadSpeedUnit').value;
+
+            if (isNaN(fileSize) || isNaN(downloadSpeed) || fileSize <= 0 || downloadSpeed <= 0) {
+                document.getElementById('result').innerText = "Please enter valid numbers for both fields.";
+                return;
+            }
+
+            // Convert file size to MB
+            let fileSizeInMB;
+            switch (fileSizeUnit) {
+                case 'GB':
+                    fileSizeInMB = fileSize * 1024;
+                    break;
+                case 'KB':
+                    fileSizeInMB = fileSize / 1024;
+                    break;
+                default:
+                    fileSizeInMB = fileSize;
+            }
+
+            // Convert download speed to MBps
+            let downloadSpeedInMBps;
+            switch (downloadSpeedUnit) {
+                case 'GBps':
+                    downloadSpeedInMBps = downloadSpeed * 1024;
+                    break;
+                case 'MBps':
+                    downloadSpeedInMBps = downloadSpeed;
+                    break;
+                default: // Mbps
+                    downloadSpeedInMBps = downloadSpeed / 8;
+            }
+
+            // Calculate time in seconds
+            const timeInSeconds = fileSizeInMB / downloadSpeedInMBps;
+
+            // Convert time to hours, minutes, and seconds
+            const hours = Math.floor(timeInSeconds / 3600);
+            const minutes = Math.floor((timeInSeconds % 3600) / 60);
+            const seconds = Math.floor(timeInSeconds % 60);
+
+            let resultText = "Estimated download time: ";
+            if (hours > 0) resultText += hours + " hour(s) ";
+            if (minutes > 0) resultText += minutes + " minute(s) ";
+            resultText += seconds + " second(s)";
+
+            document.getElementById('result').innerText = resultText;
+        }
+    </script>
+</body>
+</html>
+
+
